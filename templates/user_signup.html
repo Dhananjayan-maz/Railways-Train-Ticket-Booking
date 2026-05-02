@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .reg-card {
+        border-radius: 24px;
+        border: none;
+        overflow: hidden;
+        box-shadow: 0 15px 35px rgba(0, 51, 102, 0.1);
+        margin: 40px 0;
+    }
+    .reg-header {
+        background: linear-gradient(135deg, #002B54, #003366);
+        padding: 1rem 1.5rem;
+        border-bottom: 3px solid #FF9933;
+    }
+    .reg-header h4 {
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        margin: 0;
+    }
+    .btn-ir-register {
+        background: #FF9933;
+        border: none;
+        border-radius: 40px;
+        padding: 10px;
+        font-weight: bold;
+        font-size: 1rem;
+        transition: 0.2s;
+        color: #001F3F;
+    }
+    .btn-ir-register:hover {
+        background: #E65C00;
+        transform: translateY(-2px);
+        color: white;
+    }
+    .reg-link {
+        color: #FF9933;
+        text-decoration: none;
+        font-weight: 500;
+    }
+    .reg-link:hover {
+        text-decoration: underline;
+    }
+    .form-label {
+        font-weight: 500;
+        font-size: 0.9rem;
+    }
+    .form-control, .form-select {
+        border-radius: 20px;
+        border: 1px solid #CED4DA;
+    }
+</style>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+            <div class="card reg-card shadow">
+                <div class="reg-header text-white">
+                    <h4><i class="fas fa-user-plus me-2"></i> Create RailConnect Account</h4>
+                    <small>Register with Indian Railways e-ticketing</small>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label"><i class="fas fa-user"></i> Username *</label>
+                                    <input type="text" class="form-control" name="username" placeholder="Choose a username" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label"><i class="fas fa-lock"></i> Password *</label>
+                                    <input type="password" class="form-control" name="password" placeholder="Create strong password" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label"><i class="fas fa-envelope"></i> Email *</label>
+                                    <input type="email" class="form-control" name="email" placeholder="you@example.com" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label"><i class="fas fa-user-pen"></i> First Name</label>
+                                    <input type="text" class="form-control" name="first_name" placeholder="First name">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label"><i class="fas fa-user-tag"></i> Last Name</label>
+                                    <input type="text" class="form-control" name="last_name" placeholder="Last name">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label"><i class="fas fa-calendar-alt"></i> Date of Birth</label>
+                                    <input type="date" class="form-control" name="dob">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label"><i class="fas fa-venus-mars"></i> Gender</label>
+                                    <select class="form-select" name="gender">
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label"><i class="fas fa-phone-alt"></i> Mobile No *</label>
+                                    <input type="text" class="form-control" name="mobileno" placeholder="10-digit number" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label"><i class="fas fa-map-marker-alt"></i> Address</label>
+                                    <textarea class="form-control" name="address" rows="2" placeholder="Full address"></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label"><i class="fas fa-camera"></i> Photo (optional)</label>
+                                    <input type="file" class="form-control" name="photo" accept="image/*">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-grid mt-2">
+                            <button type="submit" class="btn btn-ir-register"><i class="fas fa-check-circle me-1"></i> Register</button>
+                        </div>
+                        <div class="text-center mt-3">
+                            <p>Already have an account? <a href="{% url 'user_login' %}" class="reg-link">Login here →</a></p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,261 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    /* --- Railways Dashboard Theme --- */
+    .dashboard-wrapper {
+        background-color: #F4F7FC;
+        min-height: calc(100vh - 140px);
+        margin-top: 1rem;
+    }
+    .sidebar {
+        background: linear-gradient(180deg, #002B54 0%, #001F3F 100%);
+        border-radius: 24px;
+        box-shadow: 8px 0 20px rgba(0,0,0,0.08);
+        padding: 1.5rem 0;
+        height: 100%;
+    }
+    .sidebar .nav-link {
+        color: #e0e9f0;
+        border-radius: 40px;
+        margin: 6px 12px;
+        padding: 10px 18px;
+        transition: 0.2s;
+    }
+    .sidebar .nav-link i {
+        width: 28px;
+    }
+    .sidebar .nav-link:hover {
+        background: rgba(255, 153, 51, 0.2);
+        color: #FFD966;
+        transform: translateX(5px);
+    }
+    .sidebar .nav-link.active {
+        background: #FF9933;
+        color: #001F3F;
+        font-weight: 600;
+        box-shadow: 0 4px 10px rgba(255,153,51,0.3);
+    }
+    .stat-card {
+        border: none;
+        border-radius: 28px;
+        overflow: hidden;
+        transition: transform 0.2s;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+    }
+    .stat-card:hover {
+        transform: translateY(-5px);
+    }
+    .stat-card .card-body {
+        padding: 1.5rem;
+    }
+    .stat-icon {
+        font-size: 2.8rem;
+        opacity: 0.8;
+    }
+    .bg-rail-blue {
+        background: linear-gradient(135deg, #003366, #1A4B7A);
+        color: white;
+    }
+    .bg-rail-orange {
+        background: linear-gradient(135deg, #FF9933, #FFB347);
+        color: #001F3F;
+    }
+    .table-custom {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+    .table-custom thead {
+        background: #002B54;
+        color: white;
+    }
+    .table-custom th, .table-custom td {
+        vertical-align: middle;
+        padding: 12px 15px;
+    }
+    .btn-cancel {
+        background: #DC3545;
+        border-radius: 30px;
+        padding: 5px 14px;
+        font-size: 0.8rem;
+        transition: 0.2s;
+    }
+    .btn-cancel:hover {
+        background: #B02A37;
+        transform: scale(0.97);
+    }
+    .user-dropdown-btn {
+        background: rgba(255,255,255,0.15);
+        border-radius: 50px;
+        padding: 6px 16px;
+        color: white;
+        transition: 0.2s;
+    }
+    .user-dropdown-btn:hover {
+        background: #FF9933;
+        color: #001F3F;
+    }
+    .dropdown-menu-custom {
+        border-radius: 20px;
+        border: none;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        margin-top: 10px;
+    }
+    .dropdown-menu-custom a {
+        padding: 8px 20px;
+        transition: 0.1s;
+    }
+    .dropdown-menu-custom a:hover {
+        background: #FFF0E0;
+        color: #FF6600;
+    }
+    @media (max-width: 768px) {
+        .sidebar {
+            margin-bottom: 20px;
+        }
+    }
+</style>
+
+<div class="container-fluid dashboard-wrapper">
+    <div class="row g-4">
+        <!-- Sidebar (Railways Navigation) -->
+        <div class="col-lg-3 col-md-4">
+            <div class="sidebar">
+                <div class="text-center mb-4">
+                    {% if user.photo %}
+                        <img src="{{ user.photo.url }}" class="rounded-circle border border-warning border-2" width="80" height="80" style="object-fit: cover;">
+                    {% else %}
+                        <div class="bg-warning rounded-circle d-inline-flex align-items-center justify-content-center" style="width:80px; height:80px;">
+                            <i class="fas fa-user fa-3x text-dark"></i>
+                        </div>
+                    {% endif %}
+                    <h6 class="text-white mt-2 mb-0">{{ user.username }}</h6>
+                    <small class="text-light">RailConnect User</small>
+                </div>
+                <nav class="nav flex-column">
+                    <a href="{% url 'dashboard' %}" class="nav-link active">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </a>
+                    <a href="{% url 'booking_details' %}" class="nav-link">
+                        <i class="fas fa-ticket-alt"></i> Book Tickets
+                    </a>
+                    <a href="{% url 'password_change' %}" class="nav-link">
+                        <i class="fas fa-key"></i> Change Password
+                    </a>
+                    <a href="{% url 'customer_profile_update' %}" class="nav-link">
+                        <i class="fas fa-user-edit"></i> Edit Profile
+                    </a>
+                    <a href="{% url 'user_logout' %}" class="nav-link">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-lg-9 col-md-8">
+            <!-- Top Bar with User Dropdown -->
+            <div class="d-flex justify-content-end mb-3">
+                <div class="dropdown">
+                    <button class="btn user-dropdown-btn dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        {% if user.photo %}
+                            <img src="{{ user.photo.url }}" class="rounded-circle" width="28" height="28">
+                        {% else %}
+                            <i class="fas fa-user-circle"></i>
+                        {% endif %}
+                        {{ user.username }}
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-custom" aria-labelledby="userDropdown">
+                        <li><a class="dropdown-item" href="{% url 'customer_profile_update' %}"><i class="fas fa-user-edit me-2"></i> Profile</a></li>
+                        <li><a class="dropdown-item" href="{% url 'password_change' %}"><i class="fas fa-key me-2"></i> Change Password</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="{% url 'user_logout' %}"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-6">
+                    <div class="card stat-card bg-rail-blue">
+                        <div class="card-body d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-white-50 mb-1">Total Bookings</h6>
+                                <h2 class="text-white mb-0">{{ total_bookings }}</h2>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="fas fa-ticket-alt text-white-50"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card stat-card bg-rail-orange">
+                        <div class="card-body d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-dark-50 mb-1">Total Amount Spent</h6>
+                                <h2 class="text-dark mb-0">₹{{ total_amount }}</h2>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="fas fa-rupee-sign text-dark"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Booking History Table -->
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-header bg-white border-0 pt-4 pb-0">
+                    <h5 class="mb-0 fw-bold" style="color:#003366;"><i class="fas fa-history me-2"></i> Booking History</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-custom align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Date</th><th>Starting</th><th>Ending</th><th>Class</th>
+                                    <th>Price/Tkt</th><th>No. of Tkts</th><th>Total</th><th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for booking in bookings %}
+                                <tr>
+                                    <td>{{ booking.date }}</td>
+                                    <td>{{ booking.starting }}</td>
+                                    <td>{{ booking.ending }}</td>
+                                    <td>{{ booking.classs }}</td>
+                                    <td>₹{{ booking.per_tik_cost }}</td>
+                                    <td>{{ booking.no_of_tickets }}</td>
+                                    <td class="fw-bold">₹{{ booking.total_amount }}</td>
+                                    <td>
+                                        <form method="POST" action="{% url 'cancel_ticket' booking.id %}" onsubmit="return confirm('🚆 Confirm cancellation? Amount will be refunded as per IRCTC rules.');">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-cancel btn-sm text-white">
+                                                <i class="fas fa-times-circle"></i> Cancel
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="8" class="text-center py-4 text-muted">
+                                        <i class="fas fa-train fa-2x mb-2 d-block"></i> No bookings yet. 
+                                        <a href="{% url 'booking_details' %}" class="text-warning">Book your first ticket now →</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS for dropdown (if not already in base) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}

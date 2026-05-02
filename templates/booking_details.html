@@ -1,0 +1,188 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .booking-card {
+        border-radius: 28px;
+        border: none;
+        overflow: hidden;
+        box-shadow: 0 15px 35px rgba(0, 51, 102, 0.1);
+        margin: 50px 0;
+    }
+    .booking-header {
+        background: linear-gradient(135deg, #002B54, #003366);
+        padding: 1rem 1.8rem;
+        border-bottom: 3px solid #FF9933;
+    }
+    .booking-header h4 {
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        margin: 0;
+    }
+    .btn-ir-book {
+        background: #FF9933;
+        border: none;
+        border-radius: 40px;
+        padding: 12px;
+        font-weight: bold;
+        font-size: 1rem;
+        transition: 0.2s;
+        color: #001F3F;
+    }
+    .btn-ir-book:hover {
+        background: #E65C00;
+        transform: translateY(-2px);
+        color: white;
+        box-shadow: 0 6px 12px rgba(255,102,0,0.3);
+    }
+    .form-label {
+        font-weight: 500;
+        font-size: 0.9rem;
+        color: #1e3a5f;
+    }
+    .form-control, .form-select {
+        border-radius: 20px;
+        border: 1px solid #CED4DA;
+        padding: 10px 16px;
+    }
+    .form-control:focus, .form-select:focus {
+        border-color: #FF9933;
+        box-shadow: 0 0 0 0.2rem rgba(255,153,51,0.25);
+    }
+    .readonly-field {
+        background-color: #F8F9FA;
+        font-weight: 500;
+        color: #1e3a5f;
+    }
+    .small-text-muted {
+        font-size: 0.75rem;
+        color: #6c757d;
+    }
+</style>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="card booking-card shadow">
+                <div class="booking-header text-white">
+                    <h4><i class="fas fa-ticket-alt me-2"></i> Book Train Ticket</h4>
+                    <small class="text-white-50">IRCTC e-ticketing | Instant Confirmation</small>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST" id="bookingForm">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label"><i class="fas fa-calendar-alt me-1"></i> Journey Date *</label>
+                                    <input type="date" class="form-control" name="date" id="date" required min="{{ today|date:'Y-m-d' }}">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label"><i class="fas fa-map-marker-alt me-1"></i> Starting City *</label>
+                                    <select class="form-select" name="starting" id="starting" required>
+                                        <option value="">Select Starting City</option>
+                                        {% for city in cities %}
+                                        <option value="{{ city.id }}">{{ city.city }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label"><i class="fas fa-flag-checkered me-1"></i> Ending City *</label>
+                                    <select class="form-select" name="ending" id="ending" required>
+                                        <option value="">Select Ending City</option>
+                                        {% for city in cities %}
+                                        <option value="{{ city.id }}">{{ city.city }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label"><i class="fas fa-chair me-1"></i> Class *</label>
+                                    <select class="form-select" name="classs" id="classs" required>
+                                        <option value="">Select Class</option>
+                                        {% for class in classes %}
+                                        <option value="{{ class }}">{{ class }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label"><i class="fas fa-users me-1"></i> Number of Tickets *</label>
+                                    <input type="number" class="form-control" name="no_of_tickets" id="no_of_tickets" min="1" placeholder="e.g., 2" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label"><i class="fas fa-rupee-sign me-1"></i> Price per Ticket</label>
+                                    <input type="text" class="form-control readonly-field" id="price_per_ticket" readonly placeholder="Will auto-fill" style="background:#f8f9fa;">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label"><i class="fas fa-receipt me-1"></i> Total Amount</label>
+                                    <input type="text" class="form-control readonly-field fw-bold" id="total_amount" readonly placeholder="Will auto-calculate" style="background:#f8f9fa; color:#003366;">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-grid mt-3">
+                            <button type="submit" class="btn btn-ir-book"><i class="fas fa-check-circle me-1"></i> Confirm Booking & Pay</button>
+                        </div>
+                        <div class="text-center mt-3 small-text-muted">
+                            <i class="fas fa-lock"></i> Secure payment gateway | Tatkal/Waitlist terms apply
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const startingSelect = document.getElementById('starting');
+    const endingSelect = document.getElementById('ending');
+    const classSelect = document.getElementById('classs');
+    const noOfTicketsInput = document.getElementById('no_of_tickets');
+    const pricePerTicketInput = document.getElementById('price_per_ticket');
+    const totalAmountInput = document.getElementById('total_amount');
+
+    function calculatePrice() {
+        const starting = startingSelect.value;
+        const ending = endingSelect.value;
+        const classs = classSelect.value;
+        const noOfTickets = noOfTicketsInput.value;
+
+        if (starting && ending && classs) {
+            fetch(`/get_price/?starting=${starting}&ending=${ending}&classs=${classs}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.price_per_ticket) {
+                        pricePerTicketInput.value = '₹' + data.price_per_ticket;
+                        if (noOfTickets && !isNaN(parseInt(noOfTickets))) {
+                            totalAmountInput.value = '₹' + (data.price_per_ticket * parseInt(noOfTickets)).toFixed(2);
+                        } else {
+                            totalAmountInput.value = '₹' + data.price_per_ticket;
+                        }
+                    } else {
+                        pricePerTicketInput.value = 'Not available';
+                        totalAmountInput.value = 'Not available';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    pricePerTicketInput.value = 'Error';
+                    totalAmountInput.value = 'Error';
+                });
+        } else {
+            pricePerTicketInput.value = '';
+            totalAmountInput.value = '';
+        }
+    }
+
+    startingSelect.addEventListener('change', calculatePrice);
+    endingSelect.addEventListener('change', calculatePrice);
+    classSelect.addEventListener('change', calculatePrice);
+    noOfTicketsInput.addEventListener('input', calculatePrice);
+
+    // Set min date to today
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('date').setAttribute('min', today);
+});
+</script>
+{% endblock %}

@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .profile-card {
+        border-radius: 28px;
+        border: none;
+        overflow: hidden;
+        box-shadow: 0 15px 35px rgba(0, 51, 102, 0.1);
+        margin: 50px 0;
+    }
+    .profile-header {
+        background: linear-gradient(135deg, #002B54, #003366);
+        padding: 1rem 1.8rem;
+        border-bottom: 3px solid #FF9933;
+    }
+    .profile-header h4 {
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        margin: 0;
+        color: white;
+    }
+    .btn-ir-update {
+        background: #FF9933;
+        border: none;
+        border-radius: 40px;
+        padding: 12px;
+        font-weight: bold;
+        font-size: 1rem;
+        transition: 0.2s;
+        color: #001F3F;
+    }
+    .btn-ir-update:hover {
+        background: #E65C00;
+        transform: translateY(-2px);
+        color: white;
+        box-shadow: 0 6px 12px rgba(255,102,0,0.3);
+    }
+    .form-label {
+        font-weight: 500;
+        font-size: 0.9rem;
+        color: #1e3a5f;
+    }
+    .form-control, .form-select {
+        border-radius: 20px;
+        border: 1px solid #CED4DA;
+        padding: 10px 16px;
+    }
+    .form-control:focus, .form-select:focus {
+        border-color: #FF9933;
+        box-shadow: 0 0 0 0.2rem rgba(255,153,51,0.25);
+    }
+    .current-photo {
+        font-size: 0.8rem;
+        background: #f8f9fa;
+        padding: 5px 12px;
+        border-radius: 20px;
+        display: inline-block;
+    }
+</style>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-7">
+            <div class="card profile-card shadow">
+                <div class="profile-header">
+                    <h4><i class="fas fa-user-edit me-2"></i> Update Profile</h4>
+                    <small class="text-white-50">Manage your RailConnect account details</small>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label"><i class="fas fa-calendar-alt me-1"></i> Date of Birth</label>
+                                    <input type="date" class="form-control" name="dob" value="{{ user.dob|date:'Y-m-d' }}">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label"><i class="fas fa-phone-alt me-1"></i> Mobile No</label>
+                                    <input type="text" class="form-control" name="mobileno" value="{{ user.mobileno }}" placeholder="10-digit mobile number">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label"><i class="fas fa-map-marker-alt me-1"></i> Address</label>
+                                    <textarea class="form-control" name="address" rows="3" placeholder="Full address">{{ user.address }}</textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label"><i class="fas fa-camera me-1"></i> Photo</label>
+                                    <input type="file" class="form-control" name="photo" accept="image/*">
+                                    {% if user.photo %}
+                                        <small class="current-photo mt-2 d-inline-block">
+                                            <i class="fas fa-image"></i> Current: {{ user.photo.name }}
+                                        </small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-grid mt-2">
+                            <button type="submit" class="btn btn-ir-update"><i class="fas fa-save me-1"></i> Update Profile</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .login-card {
+        border-radius: 24px;
+        border: none;
+        overflow: hidden;
+        box-shadow: 0 15px 35px rgba(0, 51, 102, 0.1);
+        margin-top: 60px;
+        margin-bottom: 60px;
+    }
+    .login-header {
+        background: linear-gradient(135deg, #002B54, #003366);
+        padding: 1.2rem;
+        border-bottom: 3px solid #FF9933;
+    }
+    .login-header h4 {
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+    .btn-ir-login-page {
+        background: #FF9933;
+        border: none;
+        border-radius: 40px;
+        padding: 10px;
+        font-weight: bold;
+        font-size: 1rem;
+        transition: 0.2s;
+        color: #001F3F;
+    }
+    .btn-ir-login-page:hover {
+        background: #E65C00;
+        transform: translateY(-2px);
+        color: white;
+    }
+    .login-link {
+        color: #FF9933;
+        text-decoration: none;
+        font-weight: 500;
+    }
+    .login-link:hover {
+        text-decoration: underline;
+    }
+</style>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-5 col-lg-4">
+            <div class="card login-card shadow">
+                <div class="login-header text-white text-center">
+                    <h4 class="mb-0"><i class="fas fa-train me-2"></i> RailConnect Login</h4>
+                    <small>IRCTC Authorised Portal</small>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold"><i class="fas fa-user"></i> Username</label>
+                            <input type="text" class="form-control" name="username" placeholder="Enter registered username" required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold"><i class="fas fa-lock"></i> Password</label>
+                            <input type="password" class="form-control" name="password" placeholder="••••••••" required>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-ir-login-page"><i class="fas fa-sign-in-alt me-1"></i> Login</button>
+                        </div>
+                        <div class="text-center mt-4">
+                            <p class="mb-0">New user? <a href="{% url 'user_signup' %}" class="login-link">Create account →</a></p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

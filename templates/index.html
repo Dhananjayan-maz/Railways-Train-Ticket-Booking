@@ -1,0 +1,504 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Additional CSS for Real Railways Look -->
+<style>
+    :root {
+        --ir-blue: #003366;
+        --ir-orange: #FF6600;
+        --ir-gray: #F2F2F2;
+        --ir-dark: #1A1A2E;
+    }
+    
+    body {
+        font-family: 'Segoe UI', 'Poppins', 'Roboto', sans-serif;
+    }
+    
+    /* Top Header - Indian Railways Style */
+    .top-header {
+        background: #0B2F5C;
+        border-bottom: 2px solid #FF9933;
+        font-size: 0.85rem;
+    }
+    
+    .top-header a, .top-header i {
+        transition: all 0.3s ease;
+    }
+    
+    .top-header .social-icon {
+        color: #FFE0B5;
+        margin-left: 12px;
+        font-size: 0.8rem;
+    }
+    
+    .top-header .social-icon:hover {
+        color: #FF9933;
+    }
+    
+    /* Navbar - Indian Railways Theme */
+    .custom-navbar {
+        background: linear-gradient(135deg, #002B54 0%, #001F3F 100%);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    }
+    
+    .navbar-brand {
+        font-size: 1.8rem;
+        letter-spacing: 1px;
+        background: linear-gradient(45deg, #FFD700, #FF9933);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent !important;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    .navbar-brand i {
+        color: #FF9933;
+        background: none;
+        -webkit-background-clip: unset;
+        background-clip: unset;
+    }
+    
+    .nav-link {
+        font-weight: 500;
+        margin: 0 4px;
+        transition: 0.2s;
+        font-size: 1rem;
+    }
+    
+    .nav-link:hover {
+        background-color: rgba(255, 153, 51, 0.2);
+        border-radius: 8px;
+        transform: translateY(-2px);
+    }
+    
+    .btn-ir-login {
+        background: #FF9933;
+        color: #001F3F;
+        border: none;
+        font-weight: bold;
+        border-radius: 30px;
+        padding: 6px 20px;
+        transition: 0.2s;
+    }
+    
+    .btn-ir-login:hover {
+        background: #FFB347;
+        transform: scale(1.02);
+        color:#001F3F;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    
+    /* Carousel Overlay & Caption */
+    .carousel-item {
+        max-height: 500px;
+    }
+    
+    .carousel-item img {
+        object-fit: cover;
+        height: 500px;
+        filter: brightness(0.7);
+    }
+    
+    .carousel-caption {
+        background: rgba(0, 35, 70, 0.65);
+        backdrop-filter: blur(6px);
+        border-radius: 30px;
+        padding: 18px 30px;
+        bottom: 35%;
+        left: 10%;
+        right: 10%;
+        border-left: 6px solid #FF9933;
+    }
+    
+    .carousel-caption h2 {
+        font-size: 2.3rem;
+        font-weight: 700;
+        color: #FFD966;
+    }
+    
+    /* Search Panel - Real IRCTC Style */
+    .search-card {
+        background: white;
+        border-radius: 28px;
+        box-shadow: 0 20px 35px -10px rgba(0,0,0,0.2);
+        margin-top: -65px;
+        z-index: 10;
+        position: relative;
+        border: none;
+        overflow: hidden;
+    }
+    
+    .search-card .card-header {
+        background: linear-gradient(90deg, #003366, #1A4B7A);
+        color: white;
+        font-weight: bold;
+        border-bottom: 3px solid #FF9933;
+        padding: 12px 25px;
+    }
+    
+    .form-control, .form-select {
+        border-radius: 40px;
+        border: 1px solid #CED4DA;
+        padding: 10px 18px;
+        font-size: 0.95rem;
+    }
+    
+    .btn-search-trains {
+        background: #FF6600;
+        border-radius: 40px;
+        padding: 10px 28px;
+        font-weight: bold;
+        font-size: 1.1rem;
+        width: 100%;
+        transition: 0.2s;
+        border: none;
+        color: white;
+    }
+    
+    .btn-search-trains:hover {
+        background: #E65C00;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(255,102,0,0.3);
+    }
+    
+    /* Feature Cards */
+    .feature-card {
+        border-radius: 20px;
+        border: none;
+        transition: transform 0.3s, box-shadow 0.3s;
+        background: #FFFFFF;
+        padding: 1.2rem 0.5rem;
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 30px -12px rgba(0, 51, 102, 0.2);
+    }
+    
+    .feature-icon {
+        font-size: 2.8rem;
+        background: linear-gradient(135deg, #FF9933, #FFCC66);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+    
+    /* PNR Status Quick Panel */
+    .pnr-panel {
+        background: #F0F7FF;
+        border-radius: 28px;
+        padding: 20px 30px;
+        border-left: 5px solid #FF9933;
+    }
+    
+    .btn-pnr {
+        background: #003366;
+        border-radius: 40px;
+        color: white;
+        padding: 8px 25px;
+    }
+    
+    /* Footer Real Railways */
+    .rail-footer {
+        background: #0A1F3B;
+        color: #CFDDE6;
+        border-top: 5px solid #FF9933;
+    }
+    
+    .rail-footer a {
+        color: #FFCC99;
+        text-decoration: none;
+    }
+    
+    .rail-footer a:hover {
+        color: #FF9933;
+        text-decoration: underline;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .carousel-caption h2 { font-size: 1.2rem; }
+        .search-card { margin-top: -30px; }
+        .carousel-caption { bottom: 20%; }
+    }
+</style>
+
+<!-- ================== TOP HEADER / RAILWAYS INFO ================== -->
+<div class="top-header py-2">
+    <div class="container d-flex justify-content-between flex-wrap align-items-center">
+        <div class="text-white small">
+            <i class="fas fa-flag-checkered"></i> रेल मदद (Rail Madad): 139 | 
+            <i class="fas fa-train"></i> IRCTC e-Ticketing | 
+            <i class="fas fa-clock"></i> 24x7
+        </div>
+        <div>
+            <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+        </div>
+    </div>
+</div>
+
+<!-- ================== MAIN NAVIGATION (RAILWAY DEPARTMENT STYLE) ================== -->
+<nav class="navbar navbar-expand-lg navbar-dark custom-navbar sticky-top shadow">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="#">
+            <i class="fas fa-subway"></i> RailConnect · भारतीय रेल
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto ms-3">
+                <li class="nav-item"><a class="nav-link active" href="#">🏠 Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">🚆 Train Schedule</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">📋 PNR Status</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">💺 Seat Availability</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">🎫 My Bookings</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">📞 Contact Rail</a></li>
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="btn btn-ir-login btn-sm px-4" href="{% url 'user_login' %}">
+                        <i class="fas fa-user-check"></i> Login / SignUp
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- ================== CAROUSEL - REAL RAILWAYS IMAGES ================== -->
+<div id="railCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#railCarousel" data-bs-slide-to="0" class="active"></button>
+        <button type="button" data-bs-target="#railCarousel" data-bs-slide-to="1"></button>
+        <button type="button" data-bs-target="#railCarousel" data-bs-slide-to="2"></button>
+    </div>
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=1920&h=600&q=80" class="d-block w-100" alt="Indian Train Journey">
+            <div class="carousel-caption d-none d-md-block">
+                <h2>भारतीय रेल का सफर | अपनों संग</h2>
+                <p>Book e-tickets for 7000+ trains | Safe & Secure</p>
+                <span class="badge bg-warning text-dark">राष्ट्रीय रेल परिवहन</span>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <img src="https://images.unsplash.com/photo-1474487548417-781cb71495f3?auto=format&fit=crop&w=1920&h=600&q=80" class="d-block w-100" alt="Vande Bharat Express">
+            <div class="carousel-caption d-none d-md-block">
+                <h2>सुपरफास्ट & Vande Bharat</h2>
+                <p>World class speed & comfort with modern coaches</p>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <img src="https://images.unsplash.com/photo-1566577134773-842d6e2ef811?auto=format&fit=crop&w=1920&h=600&q=80" class="d-block w-100" alt="Railway Station">
+            <div class="carousel-caption d-none d-md-block">
+                <h2>टिकट बुक करें | Instant Confirmation</h2>
+                <p>Special quotas: Tatkal, Ladies, Senior Citizen</p>
+            </div>
+        </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#railCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#railCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+    </button>
+</div>
+
+<!-- ================== MAIN BOOKING SEARCH (REAL RAILWAY PORTAL) ================== -->
+<div class="container position-relative">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card search-card shadow-lg border-0">
+                <div class="card-header bg-dark text-white border-0 py-3">
+                    <i class="fas fa-calendar-check"></i> <strong>BOOK YOUR TICKET</strong> |  <i class="fas fa-chalkboard-user"></i> e-Reservation System
+                    <span class="float-end"><i class="fas fa-wifi"></i> Quick Booking</span>
+                </div>
+                <div class="card-body p-4">
+                    <form action="#" method="GET">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label fw-semibold"><i class="fas fa-map-marker-alt text-danger"></i> From (Source)</label>
+                                <input type="text" class="form-control" placeholder="e.g., New Delhi (NDLS)" value="Mumbai Central">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-semibold"><i class="fas fa-flag-checkered text-success"></i> To (Destination)</label>
+                                <input type="text" class="form-control" placeholder="e.g., Howrah (HWH)" value="Chennai Central">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label fw-semibold"><i class="fas fa-calendar-alt"></i> Journey Date</label>
+                                <input type="date" class="form-control" value="2026-05-15">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label fw-semibold"><i class="fas fa-chair"></i> Class</label>
+                                <select class="form-select">
+                                    <option>All Classes</option>
+                                    <option>AC First Class</option>
+                                    <option>AC 2 Tier</option>
+                                    <option selected>AC 3 Tier</option>
+                                    <option>Sleeper (SL)</option>
+                                    <option>Second Sitting</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label fw-semibold"><i class="fas fa-users"></i> Quota</label>
+                                <select class="form-select">
+                                    <option>General</option>
+                                    <option>Tatkal</option>
+                                    <option>Ladies</option>
+                                    <option>Senior Citizen</option>
+                                </select>
+                            </div>
+                            <div class="col-12 mt-4">
+                                <button type="submit" class="btn btn-search-trains w-100">
+                                    <i class="fas fa-search"></i> SEARCH TRAINS & Book Now
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer bg-light small px-4 py-2">
+                    <i class="fas fa-info-circle text-info"></i> IRCTC Authorised Partner | Instant refund on cancellations | Government Authorised
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================== QUICK ACTIONS - PNR STATUS PANEL ================== -->
+<div class="container my-4">
+    <div class="pnr-panel d-flex flex-wrap align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-3">
+            <i class="fas fa-ticket-alt fa-2x text-primary"></i>
+            <span class="fw-bold">PNR Enquiry : </span>
+            <input type="text" class="form-control w-auto" placeholder="Enter 10-digit PNR" maxlength="10" style="border-radius: 40px;">
+            <button class="btn btn-pnr"><i class="fas fa-check-circle"></i> Get Status</button>
+        </div>
+        <div class="mt-2 mt-md-0">
+            <span class="badge bg-warning text-dark p-2"><i class="fas fa-clock"></i> Live Train Running Status</span>
+            <span class="badge bg-danger p-2 ms-2"><i class="fas fa-chart-line"></i> Seat Map</span>
+        </div>
+    </div>
+</div>
+
+<!-- ================== FEATURE CARDS - RAILWAYS DEPARTMENT SERVICES ================== -->
+<div class="container my-5">
+    <h2 class="text-center mb-4" style="color: #003366; font-weight: 700;">✨ रेलवे की विशेष सेवाएं ✨</h2>
+    <div class="row g-4">
+        <div class="col-md-3 col-sm-6">
+            <div class="card feature-card text-center h-100 shadow-sm">
+                <div class="card-body">
+                    <i class="fas fa-bolt feature-icon"></i>
+                    <h5 class="mt-3 fw-bold">Instant Booking</h5>
+                    <p class="text-muted">Pay via UPI / Cards & confirm ticket in seconds</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="card feature-card text-center h-100 shadow-sm">
+                <div class="card-body">
+                    <i class="fas fa-rupee-sign feature-icon"></i>
+                    <h5 class="mt-3 fw-bold">Best Refund Policy</h5>
+                    <p class="text-muted">Cancel online, refund directly to source</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="card feature-card text-center h-100 shadow-sm">
+                <div class="card-body">
+                    <i class="fas fa-map-marked-alt feature-icon"></i>
+                    <h5 class="mt-3 fw-bold">Live GPS Tracking</h5>
+                    <p class="text-muted">Real-time train location & station alerts</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="card feature-card text-center h-100 shadow-sm">
+                <div class="card-body">
+                    <i class="fas fa-phone-volume feature-icon"></i>
+                    <h5 class="mt-3 fw-bold">24x7 Rail Sampark</h5>
+                    <p class="text-muted">Call 139 for emergencies & inquiries</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================== ADDITIONAL REAL RAILWAYS SECTION : POPULAR ROUTES ================== -->
+<div class="container mb-5">
+    <div class="row align-items-center bg-light rounded-4 p-3 shadow-sm">
+        <div class="col-md-8">
+            <h4><i class="fas fa-chart-simple text-warning"></i> Popular Train Routes & Offers</h4>
+            <div class="row mt-3">
+                <div class="col-6 col-md-3"><i class="fas fa-train"></i> Shatabdi Exp</div>
+                <div class="col-6 col-md-3"><i class="fas fa-train"></i> Duronto Express</div>
+                <div class="col-6 col-md-3"><i class="fas fa-train"></i> Rajdhani Express</div>
+                <div class="col-6 col-md-3"><i class="fas fa-train"></i> Tejas Express</div>
+            </div>
+        </div>
+        <div class="col-md-4 text-center mt-2 mt-md-0">
+            <span class="badge bg-primary p-2 px-3"><i class="fas fa-tag"></i> FLAT ₹50 OFF on first booking</span>
+        </div>
+    </div>
+</div>
+
+<!-- ================== FOOTER - INDIAN RAILWAYS STYLE ================== -->
+<footer class="rail-footer pt-5 pb-3 mt-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <h5><i class="fas fa-train"></i> RailConnect · IRCTC</h5>
+                <p class="small">Ministry of Railways, Government of India<br> National Train Enquiry System (NTES)<br> Copyright © 2026</p>
+            </div>
+            <div class="col-md-4 mb-4">
+                <h6>Quick Links</h6>
+                <ul class="list-unstyled small">
+                    <li><a href="#">About IRCTC</a></li>
+                    <li><a href="#">Grievance Redressal</a></li>
+                    <li><a href="#">Privacy Policy & Terms</a></li>
+                    <li><a href="#">Agent Portal</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4 mb-4">
+                <h6>Contact Railway Department</h6>
+                <p class="small mb-1"><i class="fas fa-phone-alt"></i> Rail Madad : 139 (24hrs)</p>
+                <p class="small"><i class="fas fa-envelope"></i> care@railconnect.gov.in</p>
+                <div class="mt-2">
+                    <a href="#" class="text-white-50 me-2"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-white-50 me-2"><i class="fab fa-youtube"></i></a>
+                    <a href="#" class="text-white-50"><i class="fab fa-telegram"></i></a>
+                </div>
+            </div>
+        </div>
+        <hr class="bg-secondary">
+        <div class="text-center small">
+            <p class="mb-0">भारत सरकार का एक पहल | This is a simulated railway ticketing portal for educational purpose | “Safety, Security & Punctuality”</p>
+        </div>
+    </div>
+</footer>
+
+<!-- Optional Bootstrap JS ensures carousel works (already in base.html but safe) -->
+<script>
+    // Activate carousel and additional interactive features for realistic effect
+    document.addEventListener('DOMContentLoaded', function() {
+        // For any extra PNR mock alert (just for demonstration)
+        let pnrBtn = document.querySelector('.btn-pnr');
+        if(pnrBtn) {
+            pnrBtn.addEventListener('click', function(e) {
+                let pnrInput = document.querySelector('.pnr-panel input');
+                if(pnrInput.value.length === 10) {
+                    alert('⚠️ PNR Status: CONFIRMED (CNF) | Coach: B2, Seat: 45 (Upper)');
+                } else if(pnrInput.value.length > 0) {
+                    alert('Invalid PNR. Please enter 10-digit number.');
+                } else {
+                    alert('Kindly enter valid PNR number from your ticket.');
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}
