@@ -1,156 +1,315 @@
-# 🚆 RailConnect – Train Ticket Booking System (Django)
+# 🚆 RailConnect – Train Ticket Booking System
 
-A full‑featured railway e‑ticketing web application built with Django.  
-**Admin‑first design** – All prices, city routes, and per‑km charges are configurable from the Django admin panel without touching a single line of code.
+A full-featured railway e-ticket booking web application developed using Django that enables users to search routes, calculate dynamic ticket pricing, and manage railway bookings through a secure and responsive dashboard.
 
-![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)
-![Django](https://img.shields.io/badge/Django-5.2-green.svg)
+The system follows an admin-first architecture where cities, routes, distances, and pricing configurations can be fully managed through the Django admin panel without modifying application code.
 
 ---
 
-## ✨ Features
+## 📌 Project Overview
 
-- **User Authentication** – Registration, Login, Password Change, Profile Update (with photo)
-- **Ticket Booking** – Select source/destination, travel class, number of passengers → dynamic price calculation
-- **Dynamic Pricing** – Fare = `(distance in km) × (per_km_rate)` (per_km_rate can be different for each travel class)
-- **Admin Configurable** – Add/Edit cities, set distances between cities, change per‑km price per class – all from Django admin
-- **Dashboard** – View booking history, total amount spent, cancel tickets
-- **Responsive UI** – Designed with **Indian Railways theme** (blue & orange gradient, modern cards)
-- **Secure** – CSRF protection, password hashing, user session management
+RailConnect is designed to simulate a real-world railway reservation platform with dynamic pricing and configurable route management.
 
+The application allows users to register, book train tickets, manage profiles, and track booking history while administrators can configure routes, fare structures, and travel classes directly from the admin panel.
+
+The pricing engine calculates ticket fares dynamically based on travel distance and class-specific per-kilometer pricing.
+
+---
+
+## ✨ Key Features
+
+### 🔹 User Authentication
+- User Registration and Login
+- Secure password hashing
+- Password change functionality
+- Profile management with photo upload
+- Session-based authentication
+
+### 🔹 Ticket Booking System
+- Select source and destination cities
+- Choose travel class
+- Dynamic fare calculation
+- Multi-passenger ticket booking
+- Instant booking confirmation
+
+### 🔹 Dynamic Pricing Engine
+- Distance-based fare calculation
+- Class-wise configurable pricing
+- Real-time total amount generation
+- Fully admin-controlled fare structure
+
+### 🔹 Admin Panel Configuration
+- Manage cities and routes
+- Configure distance between cities
+- Modify class-wise price per kilometer
+- Monitor user bookings
+- No code changes required for pricing updates
+
+### 🔹 Dashboard & Booking Management
+- User booking history
+- Total ticket spending overview
+- Cancel booked tickets
+- Booking management interface
+
+### 🔹 UI & User Experience
+- Responsive railway-themed UI
+- Modern dashboard layout
+- Interactive booking workflow
+- Indian Railways inspired design
+
+---
+
+## 🛠️ Technologies Used
+
+### Frontend
+- HTML
+- CSS
+- Bootstrap
+- AdminLTE
+- JavaScript
+
+### Backend
+- Django
+- Python
+
+### Database
+- MySQL / SQLite
+
+### Development Tools
+- VS Code
+- GitHub
+
+---
+
+## ⚙️ Ticket Booking Workflow
+
+```text
+User Login / Registration
+            ↓
+Select Source & Destination
+            ↓
+Choose Travel Class
+            ↓
+Enter Passenger Count
+            ↓
+Fetch Distance Between Cities
+            ↓
+Calculate Fare Dynamically
+            ↓
+Generate Booking Record
+            ↓
+Display Booking Confirmation
+```
+
+---
+
+## 🧠 Dynamic Pricing Logic
+
+The fare calculation system is fully database-driven and configurable through the admin panel.
+
+### Pricing Formula
+
+```text
+Total Fare = Distance × Price Per KM × Number of Passengers
+```
+
+### Database Models Used
+
+#### City Model
+Stores city names.
+
+#### Route / CityDistance Model
+Stores:
+- Source city
+- Destination city
+- Distance in kilometers
+
+#### TrainClass Model
+Stores:
+- Class name
+- Price per kilometer
+
+#### Booking Model
+Stores:
+- Passenger details
+- Booking information
+- Total calculated amount
+
+---
+
+## 🧠 Project Architecture
+
+```text
+                ┌─────────────────┐
+                │ User Interface  │
+                └────────┬────────┘
+                         │
+                         ▼
+                ┌─────────────────┐
+                │ Django Backend  │
+                └────────┬────────┘
+                         │
+         ┌───────────────┼───────────────┐
+         ▼                               ▼
+┌─────────────────┐           ┌─────────────────┐
+│ Authentication  │           │ Pricing Engine  │
+│ System          │           │ Booking Logic   │
+└────────┬────────┘           └────────┬────────┘
+         │                               │
+         ▼                               ▼
+┌─────────────────────────────────────────────┐
+│              MySQL Database                 │
+└─────────────────────────────────────────────┘
+```
+
+---
+
+## 📸 Project Screenshots
+
+### 🏠 Home Page
 <img width="1352" height="638" alt="train1" src="https://github.com/user-attachments/assets/ac3fddd2-cdd3-4801-b4ac-b2997f338b3b" />
+
+### 🎫 Ticket Booking
 <img width="1343" height="680" alt="train3" src="https://github.com/user-attachments/assets/69acbc0a-7805-430c-b799-ffcf83e45c48" />
+
+### 📊 User Dashboard
 <img width="1361" height="681" alt="train2" src="https://github.com/user-attachments/assets/ea127500-4605-490b-acd4-4725caf5b2a6"/>
----
-
-## 🧠 How Price Calculation Works (No Code Changes Needed)
-
-The system does **not** require you to edit views or models to change fares. Everything is stored in the database and can be modified by an admin user.
-
-1. **City Model** – stores city name.
-2. **Route (CityDistance) Model** – stores `(source_city, destination_city, distance_in_km)`.
-3. **Class Model** – stores class name (e.g., "AC 3 Tier", "Sleeper") and `price_per_km` for that class.
-4. **Booking** – When a user books:
-   - System fetches distance between selected cities.
-   - Multiplies distance by `price_per_km` of the chosen class.
-   - Multiplies by number of tickets → total amount.
-
-👉 **To change a fare**:  
-- Go to `/admin` → **CityDistance** → update the km between two cities, **or**  
-- Go to **Class** → change `price_per_km` for a class.  
-The front‑end booking form will reflect the new price immediately.
-
-No need to touch `views.py`, `urls.py`, or JavaScript.
 
 ---
 
-## 📁 Project Structure (Simplified)
+## 📂 Project Structure
 
+```text
 Train_Ticket_Booking/
 
 ├── manage.py
-
-├── MySQL
-
 ├── requirements.txt
-
 ├── static/
-
 ├── templates/
-
-│ ├── base.html
-
-│ ├── index.html
-
-│ ├── login.html
-
-│ ├── signup.html
-
-│ ├── dashboard.html
-
-│ ├── booking.html
-
-│ ├── change_password.html
-
-│ └── profile_update.html
-
+│
+│   ├── base.html
+│   ├── index.html
+│   ├── login.html
+│   ├── signup.html
+│   ├── dashboard.html
+│   ├── booking.html
+│   ├── change_password.html
+│   └── profile_update.html
+│
 ├── booking_app/
-
-│ ├── models.py # City, CityDistance, TrainClass, Booking
-
-│ ├── admin.py # Register models for admin panel
-
-│ ├── views.py # Booking, dashboard, cancel
-
-│ └── urls.py
-
+│   ├── models.py
+│   ├── admin.py
+│   ├── views.py
+│   └── urls.py
+│
 └── railconnect/
+    ├── settings.py
+    └── urls.py
+```
 
-├── settings.py
-
-└── urls.py
 ---
 
-# Tech Stack
-Backend: Django 5.2
-Frontend: HTML, CSS, Bootstrap, AdminLTE
-Database: MySQL / SQLite
-Language: Python 3.11+
+## 🚀 Installation & Setup
 
-## 🛠️ Setup Instructions (Run Locally)
+### 1️⃣ Clone Repository
 
-### Prerequisites
-- Python 3.11+
-- pip
-- Virtual environment (recommended)
-
-### Step 1 – Clone the repository
 ```bash
 git clone https://github.com/Dhananjayan-maz/Railways-Train-Ticket-Booking.git
 
-cd train
+cd Railways-Train-Ticket-Booking
+```
 
+### 2️⃣ Create Virtual Environment
 
-### Step 2 – Create virtual environment & install dependencies
-
+```bash
 python -m venv venv
-source venv/bin/activate      # On Windows: venv\Scripts\activate
+```
+
+Activate environment:
+
+#### Windows
+```bash
+venv\Scripts\activate
+```
+
+#### Linux / macOS
+```bash
+source venv/bin/activate
+```
+
+### 3️⃣ Install Dependencies
+
+```bash
 pip install -r requirements.txt
+```
 
-### Step 3 – Apply migrations & create superuser
+### 4️⃣ Apply Database Migrations
 
+```bash
 python manage.py makemigrations
 python manage.py migrate
-python manage.py createsuperuser   # Follow prompts (admin login for /admin)
+```
 
-` ``` `
+### 5️⃣ Create Superuser
 
-### Step 4 – Load initial data (optional)
+```bash
+python manage.py createsuperuser
+```
 
-You can add cities, distances, and classes via the admin panel after running the server.
+### 6️⃣ Run Development Server
 
-### Step 5 – Run development server
-
+```bash
 python manage.py runserver
-Visit http://127.0.0.1:8000 – you’re ready!
+```
+
+Open in browser:
+
+```text
+http://127.0.0.1:8000/
+```
 
 ---
 
-🔧 Admin Panel Usage
-Access at: http://127.0.0.1:8000/admin
+## 🔧 Admin Panel Usage
 
-To add / modify cities:
-City → Add city name.
+Access admin panel:
 
-To set distance between two cities:
-City Distance → Choose source city, destination city, enter distance (km).
+```text
+http://127.0.0.1:8000/admin
+```
 
-To change fare per class:
-Train Class → Edit existing class (e.g., Sleeper) and change Price per Km.
+### Configure Cities
+- Add city names
+- Manage available routes
 
-To view bookings:
-Booking → See all user bookings.
+### Configure Distances
+- Set distance between cities
+- Update travel routes dynamically
 
-📬 Contact
-For any queries: mdhananjayan581@gmail.com
-Project Link: https://github.com/Dhananjayan-maz/Railways-Train-Ticket-Booking.git
+### Configure Fare Pricing
+- Modify price per kilometer
+- Manage travel classes
+
+### Manage Bookings
+- View user reservations
+- Track ticket bookings
+
+---
+
+## 🔒 Security Features
+
+- Password hashing using Django Authentication
+- CSRF protection enabled
+- Secure session handling
+- ORM-based database operations
+
+---
+
+## 🔮 Future Enhancements
+
+- Online payment gateway integration
+- Live train availability
+- Seat selection system
+- Ticket PDF generation
+- Email and SMS notifications
+- Real-time train tracking
